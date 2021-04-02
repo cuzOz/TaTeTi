@@ -1,18 +1,37 @@
 var turnoActual = 'X';
 var cordenadasList = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3'];
 var movidas = 0;
+var hayGanador = false;
 
-function IniciarJuego(){
-  let i;
-  for (i=0; i < cordenadasList.length; i++){
-    document.getElementById(cordenadasList[i]).disabled = false;
-  }
+function Iniciar(){
+  CambiarEstadoJuego(false);
 }
-function FinalizarJuego(){
+function Reiniciar(){
+  LimpiarTablero();
+}
+function Finalizar(){
+  LimpiarTablero();
+  CambiarEstadoJuego(true);
+}
+function LimpiarTablero(){
+  let i;
+  for (i=0; i < this.cordenadasList.length; i++){
+    let boton = document.getElementById(cordenadasList[i]);
+    if (boton.value != '-'){
+      boton.value = '-';
+    }
+  }
+  movidas = 0;
+  hayGanador = false;
+  turnoActual = 'X';
+}
+function CambiarEstadoJuego(decision){
   let i;
   for (i=0; i < cordenadasList.length; i++){
-    document.getElementById(cordenadasList[i]).disabled = true;
+    document.getElementById(cordenadasList[i]).disabled = decision;
   }
+  document.getElementById('btn-inicio').disabled = !decision;
+  document.getElementById('btn-reinicio').disabled = decision;
 }
 function Toco(cordenada){
   let valorDeBoton = document.getElementById(cordenada).value;
@@ -32,10 +51,6 @@ function CambiarTurno(){
   }
 }
 function Evaluar(){
-  if (movidas == 9){
-    alert('Juego terminado');
-    FinalizarJuego();
-  }
   let btnA1 = document.getElementById('A1');
   let btnB1 = document.getElementById('B1');
   let btnC1 = document.getElementById('C1');
@@ -64,6 +79,13 @@ function EvaluarCoincidencia(btn1, btn2, btn3){
       return;
     }else{
       alert('Ganó: '+ btn1.value);
+      hayGanador = true;
     }
+  }
+  BoardCheck();
+}
+function BoardCheck(){
+  if (movidas == 9 || hayGanador){
+    Finalizar();
   }
 }
